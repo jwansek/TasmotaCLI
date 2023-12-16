@@ -61,7 +61,7 @@ parser.add_argument(
     "-m", "--mqtt-host",
     type = str,
     help = "MQTT Server",
-    required = True
+    default = "172.18.0.2",
 )
 parser.add_argument(
     "-u", "--user",
