@@ -1,2 +1,4 @@
 tasmotadevicecontroller
 aiohttp
+paho-mqtt
+
