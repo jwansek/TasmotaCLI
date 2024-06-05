@@ -2,6 +2,7 @@ import paho.mqtt.client as paho
 import threading
 import argparse
 import getpass
+import docker_net
 import time
 import json
 
@@ -61,7 +62,7 @@ parser.add_argument(
     "-m", "--mqtt-host",
     type = str,
     help = "MQTT Server",
-    default = "172.18.0.2",
+    default = docker_net.get_mqtt_addr()[0]
 )
 parser.add_argument(
     "-u", "--user",
