@@ -34,12 +34,14 @@ class MQTTClient:
     
     def _on_connect_cb(self, mqtt, userdata, flags, rc):
         # print("Connected to broker")
+        topic = "tele/TasmotaPlug/%s/SENSOR" % self.friendlyname
         if self.message is None:
-            self.mqtt_c.subscribe("tele/%s/+" % self.friendlyname)
+            print("Waiting for '%s'" % topic)
+            self.mqtt_c.subscribe(topic)
 
         else:
-            self.mqtt_c.publish("cmnd/%s/Power" % self.friendlyname, payload = self.message)
-            print("Sent message '%s' to topic 'cmnd/%s/Power'" % (self.message, self.friendlyname))
+            self.mqtt_c.publish("cmnd/TasmotaPlug/%s/Power" % self.friendlyname, payload = self.message)
+            print("Sent message '%s' to topic 'cmnd/TasmotaPlug/%s/Power'" % (self.message, self.friendlyname))
             SENT_EVENT.set()
             self.mqtt_c.disconnect()
 
