@@ -34,7 +34,7 @@ class MQTTClient:
     
     def _on_connect_cb(self, mqtt, userdata, flags, rc):
         # print("Connected to broker")
-        topic = "tele/TasmotaPlug/%s/SENSOR" % self.friendlyname
+        topic = "tele/TasmotaPlug/%s/+" % self.friendlyname
         if self.message is None:
             print("Waiting for '%s'" % topic)
             self.mqtt_c.subscribe(topic)
@@ -48,10 +48,10 @@ class MQTTClient:
     def _on_message_cb(self, mqtt, userdata, msg):
         # print('Topic: {0} | Message: {1}'.format(msg.topic, msg.payload))
 
-        if msg.topic.split("/")[1] == self.friendlyname:
-            if msg.topic.split("/")[2] == "SENSOR":
+        if msg.topic.split("/")[2] == self.friendlyname:
+            if msg.topic.split("/")[3] == "SENSOR":
                 self.switch_energy = json.loads(msg.payload.decode())["ENERGY"]
-            elif msg.topic.split("/")[2] == "STATE":
+            elif msg.topic.split("/")[3] == "STATE":
                 self.switch_power = json.loads(msg.payload.decode())["POWER"]
         
         if self.switch_power is not None and self.switch_energy is not None:
@@ -64,7 +64,7 @@ parser.add_argument(
     "-m", "--mqtt-host",
     type = str,
     help = "MQTT Server",
-    default = docker_net.get_mqtt_addr()[0]
+    default = "<docker>"
 )
 parser.add_argument(
     "-u", "--user",
@@ -86,6 +86,8 @@ parser.add_argument(
 
 if __name__ == "__main__":
     args = vars(parser.parse_args())
+    if args["mqtt_host"] == "<docker>":
+       args["mqtt_host"] = docker_net.get_mqtt_addr()[0]
     if args["user"] is not None:
         args["password"] = getpass.getpass("Input password for %s@%s: " % (args["user"], args["mqtt_host"]))
     else:
